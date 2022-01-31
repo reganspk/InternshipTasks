@@ -4,10 +4,16 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Image,
 } from 'react-native';
 import React, {useRef, useState} from 'react';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
+import leftArrow from '../images/left-arrow.png';
 
-export default function OTP() {
+export default function OTP({navigation}) {
   const input1 = useRef();
   const input2 = useRef();
   const input3 = useRef();
@@ -30,6 +36,16 @@ export default function OTP() {
   };
   return (
     <View style={styles.container}>
+      <TouchableOpacity
+        style={{
+          justifyContent: 'center',
+
+          width: wp(10),
+          marginHorizontal: 20,
+        }}
+        onPress={() => navigation.goBack()}>
+        <Image source={leftArrow} style={{height: hp(5), width: wp(10)}} />
+      </TouchableOpacity>
       <View
         style={{
           alignItems: 'center',

@@ -6,6 +6,11 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import leftArrow from '../images/left-arrow.png';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 import React, {useState} from 'react';
 import rightArrow from '../images/right-arrow.png';
 
@@ -17,6 +22,16 @@ export default function ForgotPassword({navigation}) {
   };
   return (
     <View style={styles.container}>
+      <TouchableOpacity
+        style={{
+          justifyContent: 'center',
+
+          width: wp(10),
+          marginHorizontal: 20,
+        }}
+        onPress={() => navigation.goBack()}>
+        <Image source={leftArrow} style={{height: hp(5), width: wp(10)}} />
+      </TouchableOpacity>
       <View style={{marginVertical: 40, marginHorizontal: 20}}>
         <Text style={{fontSize: 20}}>Did you forgot your password ?</Text>
         <TextInput

@@ -1,9 +1,12 @@
 package com.newproject;
-
 import android.app.Application;
 import android.content.Context;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
+import com.reactnativecommunity.geolocation.GeolocationPackage;
+import com.reactnativecommunity.geolocation.GeolocationPackage;
+import com.reactnativegooglesignin.RNGoogleSigninPackage;
+import com.zoontek.rnbootsplash.RNBootSplashPackage;
 import com.imagepicker.ImagePickerPackage;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
@@ -11,6 +14,9 @@ import com.facebook.react.ReactPackage;
 import com.facebook.soloader.SoLoader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import com.airbnb.android.react.maps.MapsPackage;
+import com.zoontek.rnbootsplash.RNBootSplashPackage; // <- add the RNBootSplashPackage import
+
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -35,7 +41,6 @@ public class MainApplication extends Application implements ReactApplication {
           return "index";
         }
       };
-
   @Override
   public ReactNativeHost getReactNativeHost() {
     return mReactNativeHost;

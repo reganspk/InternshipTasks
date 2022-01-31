@@ -14,6 +14,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import auth from '@react-native-firebase/auth';
 const Practice = ({navigation}) => {
   const dispatch = useDispatch();
   const selector = useSelector(state => state.sampleReducer);
@@ -27,6 +28,11 @@ const Practice = ({navigation}) => {
   const onRefresh = () => {
     dispatch(getDataAction());
   };
+  const signoutHandler = () => {
+    auth()
+      .signOut()
+      .then(() => console.log('User signed out!'));
+  };
   return (
     <View style={{alignItems: 'center', backgroundColor: '#cbcbcb', flex: 1}}>
       <Text style={{color: '#fff', fontWeight: 'bold', fontSize: 50}}>
@@ -39,9 +45,21 @@ const Practice = ({navigation}) => {
           padding: 5,
           borderRadius: 5,
           backgroundColor: 'black',
+          marginVertical: 5,
         }}
         onPress={() => navigation.navigate('ADD USER')}>
         <Text style={{color: '#fff'}}>ADD USER</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={{
+          borderWidth: 2,
+          borderColor: 'black',
+          padding: 5,
+          borderRadius: 5,
+          backgroundColor: 'black',
+        }}
+        onPress={signoutHandler}>
+        <Text style={{color: '#fff'}}>SIGN OUT</Text>
       </TouchableOpacity>
       <ScrollView
         style={{

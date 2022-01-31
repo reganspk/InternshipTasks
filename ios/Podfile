@@ -14,6 +14,12 @@ target 'newproject' do
 
   pod 'react-native-image-picker', :path => '../node_modules/react-native-image-picker'
 
+  pod 'RNBootSplash', :path => '../node_modules/react-native-bootsplash'
+
+  pod 'RNGoogleSignin', :path => '../node_modules/@react-native-google-signin/google-signin'
+
+  pod 'react-native-geolocation', :path => '../node_modules/@react-native-community/geolocation'
+
   target 'newprojectTests' do
     inherit! :complete
     # Pods for testing
