@@ -43,7 +43,8 @@ export const epicSample = action =>
         mergeMap(response => {
           RootNavigation.navigate('tabRoute', {header: 'header'});
           console.log(action.payload, 'payload');
-          action.payload.myUIChange();
+          action.payload.modalChange();
+
           return of({
             type: DATA_SUCCESS,
             payload: response,

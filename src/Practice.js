@@ -6,6 +6,9 @@ import {
   ScrollView,
   TouchableOpacity,
   RefreshControl,
+  Modal,
+  StyleSheet,
+  Image,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {
@@ -19,16 +22,16 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import auth from '@react-native-firebase/auth';
+import close from './images/close.png';
 
 const Practice = ({navigation}) => {
-  const [abcde, setabcde] = useState(false);
   const dispatch = useDispatch();
   const selector = useSelector(state => state.sampleReducer);
+  const [modalVisible, setModalVisible] = useState(false);
   const {response, isFetching, isSuccess} = selector;
 
   // console.log(response, 'response');
-  const [bool, setBool] = useState(false);
-  const [load, setLoad] = useState(false);
+
   useEffect(() => {
     onRefresh();
   }, []);
@@ -40,8 +43,8 @@ const Practice = ({navigation}) => {
   const onRefresh = () => {
     dispatch(
       getDataAction({
-        myUIChange: () => {
-          setabcde(true);
+        modalChange: () => {
+          setModalVisible(true);
         },
       }),
     );
@@ -49,42 +52,11 @@ const Practice = ({navigation}) => {
   const signoutHandler = () => {
     auth()
       .signOut()
-      .then(() => navigation.navigate('Login'));
+      .then(() => {
+        return navigation.navigate('Login');
+      });
   };
-  useEffect(() => {
-    console.log(isSuccess, isFetching);
-    if (isSuccess && !isFetching) {
-      setBool(true);
-    }
-  }, [isSuccess, isFetching]);
-  const handleButton = () => {
-    setabcde(false);
-    dispatch({type: 'SET_MODAL_CLOSE'});
-  };
-  const model = () => {
-    return (
-      <View
-        style={{
-          justifyContent: 'center',
-          alignItems: 'center',
 
-          flex: 1,
-        }}>
-        <View>
-          <Text style={{fontWeight: 'bold', fontSize: 50}}>
-            Successfully Dispatched!!
-          </Text>
-        </View>
-        <TouchableOpacity
-          style={{backgroundColor: '#000', borderRadius: 5, padding: 10}}
-          onPress={handleButton}>
-          <Text style={{color: 'white', width: wp(10), textAlign: 'center'}}>
-            OK
-          </Text>
-        </TouchableOpacity>
-      </View>
-    );
-  };
   return (
     <View style={{alignItems: 'center', backgroundColor: '#cbcbcb', flex: 1}}>
       <Text style={{color: '#fff', fontWeight: 'bold', fontSize: 50}}>
@@ -158,13 +130,74 @@ const Practice = ({navigation}) => {
           </>
         )}
       </ScrollView>
-      {abcde && (
-        <View style={{backgroundColor: '#d4f1f9'}}>
-          <View>{model()}</View>
-        </View>
-      )}
+      <View style={styles.centeredView}>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            Alert.alert('Modal has been closed.');
+            setModalVisible(!modalVisible);
+          }}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text style={styles.modalText}>
+                Your Data has been successfully Loaded !!!!!!
+              </Text>
+              <TouchableOpacity
+                style={[styles.button, styles.buttonClose]}
+                onPress={() => setModalVisible(!modalVisible)}>
+                <Image
+                  source={close}
+                  style={{height: 40, width: 40, tintColor: 'red'}}
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+      </View>
     </View>
   );
 };
 
 export default Practice;
+
+const styles = StyleSheet.create({
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    borderRadius: 40,
+    padding: 10,
+    elevation: 2,
+  },
+
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+});

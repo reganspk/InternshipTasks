@@ -39,13 +39,7 @@ function sampleReducer(state = {}, action) {
         isFetching: false,
         isError: true,
       };
-    case 'SET_MODAL_CLOSE':
-      return {
-        ...state,
-        isFetching: false,
-        isError: false,
-        isSuccess: false,
-      };
+
     default:
       return state;
   }

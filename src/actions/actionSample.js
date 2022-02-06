@@ -7,7 +7,7 @@ export const POST_FAILURE = 'POST_FAILURE';
 export const POST_SUCCESS = 'POST_SUCCESS';
 export const POST_ATTEMPT = 'POST_ATTEMPT';
 
-export const getDataAction = (payload = {myUIChange: () => {}}) => ({
+export const getDataAction = (payload = {modalChange: () => {}}) => ({
   type: DATA_ATTEMPT,
   payload,
 });

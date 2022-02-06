@@ -19,6 +19,8 @@
        <meta-data
      android:name="com.google.android.geo.API_KEY"
      android:value="AIzaSyCbL0CUh2x3w76DsTNVcoMNIB1YKkChVwU"/>
+      <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
+    <meta-data android:name="com.facebook.sdk.ClientToken" android:value="@string/facebook_client_token"/>
 <!-- AIzaSyCbL0CUh2x3w76DsTNVcoMNIB1YKkChVwU
 AIzaSyA8n48qqDrCh3gh012DPyw68q82sOEr1ak -->
    <!-- You will also only need to add this uses-library tag -->

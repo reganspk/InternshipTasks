@@ -12,7 +12,7 @@ import downArrow from '../images/down-arrow.png';
 import userImg from '../images/user.png';
 import email from '../images/email.png';
 import lock from '../images/lock.png';
-import google from '../images/google.png';
+import {google, facebook} from '../images';
 import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
 import {
   GoogleSignin,
@@ -38,6 +38,12 @@ import Practice from '../Practice';
 import Geolocation from '@react-native-community/geolocation';
 import {useSelector} from 'react-redux';
 import {SignIn} from '../apiSerivice';
+import {
+  GraphRequest,
+  AccessToken,
+  GraphRequestManager,
+  LoginManager,
+} from 'react-native-fbsdk-next';
 GoogleSignin.configure({
   webClientId:
     '650889095127-3kq9l5e19f2hcgb9va287d7lc732dr7q.apps.googleusercontent.com',
@@ -97,6 +103,54 @@ export default function Login({navigation}) {
   const signInHandle = () => {
     console.log(loginData.email);
     SignIn(loginData.email, loginData.password);
+  };
+  /* Facebook Signin */
+
+  const facebookSignIn = async () => {
+    console.log('Facebook login');
+    try {
+      LoginManager.logOut();
+      LoginManager.setLoginBehavior('web_only');
+      LoginManager.logInWithPermissions(['public_profile', 'email']).then(
+        function (result) {
+          console.log('result', result);
+          if (result.isCancelled) {
+            console.log('Login cancelled');
+          } else {
+            console.log(result);
+            AccessToken.getCurrentAccessToken().then(data => {
+              const accessToken = data.accessToken.toString();
+              getInfoFromToken(accessToken);
+            });
+          }
+        },
+        function (error) {
+          console.log('Login fail with error: ' + error);
+        },
+      );
+    } catch (error) {
+      console.log('Login fail with error: ' + error);
+    }
+  };
+  const getInfoFromToken = token => {
+    const PROFILE_REQUEST_PARAMS = {
+      fields: {
+        string: 'id,name,first_name,last_name,picture.type(large),email',
+      },
+    };
+
+    const profileRequest = new GraphRequest(
+      '/me',
+      {token, parameters: PROFILE_REQUEST_PARAMS},
+      (error, user) => {
+        if (error) {
+        } else {
+          console.log(user);
+        }
+      },
+    );
+
+    new GraphRequestManager().addRequest(profileRequest).start();
   };
 
   return (
@@ -252,23 +306,50 @@ export default function Login({navigation}) {
               </TouchableOpacity>
             </View>
             <TouchableOpacity
-              style={{
-                flexDirection: 'row',
-                borderColor: '#000',
-                borderWidth: 0.5,
-                padding: 5,
-                marginVertical: 15,
-              }}
+              style={[
+                {
+                  flexDirection: 'row',
+                  borderColor: '#000',
+                  borderWidth: 0.5,
+                  padding: 5,
+                  marginVertical: 10,
+                  paddingHorizontal: 13,
+                },
+                styles.loginBox,
+              ]}
               onPress={googleSignIn}>
               <Image
                 source={google}
+                style={[
+                  {
+                    height: hp(3),
+                    width: wp(6),
+                    resizeMode: 'cover',
+                  },
+                ]}
+              />
+              <Text style={{paddingLeft: 5}}>Signin with Google</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                {
+                  flexDirection: 'row',
+                  borderColor: '#000',
+                  borderWidth: 0.5,
+                  padding: 5,
+                },
+                styles.loginBox,
+              ]}
+              onPress={facebookSignIn}>
+              <Image
+                source={facebook}
                 style={{
                   height: hp(3),
                   width: wp(6),
                   resizeMode: 'cover',
                 }}
               />
-              <Text style={{paddingLeft: 5}}>Signin with Google</Text>
+              <Text style={{paddingLeft: 3}}>Signin with Facebook</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -332,5 +413,8 @@ const styles = StyleSheet.create({
   },
   map: {
     ...StyleSheet.absoluteFillObject,
+  },
+  loginBox: {
+    borderRadius: 5,
   },
 });
