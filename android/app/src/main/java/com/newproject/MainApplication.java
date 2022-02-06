@@ -1,8 +1,12 @@
 package com.newproject;
+
 import android.app.Application;
 import android.content.Context;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
+import com.swmansion.reanimated.ReanimatedPackage;
+  import com.facebook.react.bridge.JSIModulePackage; // <- add
+  import com.swmansion.reanimated.ReanimatedJSIModulePackage; // <- add
 import com.reactnativecommunity.geolocation.GeolocationPackage;
 import com.reactnativecommunity.geolocation.GeolocationPackage;
 import com.reactnativegooglesignin.RNGoogleSigninPackage;
@@ -40,7 +44,12 @@ public class MainApplication extends Application implements ReactApplication {
         protected String getJSMainModuleName() {
           return "index";
         }
+         @Override
+      protected JSIModulePackage getJSIModulePackage() {
+        return new ReanimatedJSIModulePackage(); // <- add
+      }
       };
+    
   @Override
   public ReactNativeHost getReactNativeHost() {
     return mReactNativeHost;

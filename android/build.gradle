@@ -15,7 +15,7 @@ buildscript {
         googlePlayServicesVersion = "16.0.1"
     }
     repositories {
-        google()
+       
         mavenCentral()
         google()  // Google's Maven repository
     }
@@ -42,7 +42,7 @@ allprojects {
             url("$rootDir/../node_modules/jsc-android/dist")
         }
 
-        google()
+     
         maven { url 'https://www.jitpack.io' }
     }
 }

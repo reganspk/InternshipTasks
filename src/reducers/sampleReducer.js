@@ -23,13 +23,14 @@ import {
 function sampleReducer(state = {}, action) {
   switch (action.type) {
     case DATA_ATTEMPT:
-      return {...state, isFetching: true, isError: false};
+      return {...state, isFetching: true, isError: false, isSuccess: false};
 
     case DATA_SUCCESS:
       return {
         ...state,
         isFetching: false,
         isError: false,
+        isSuccess: true,
         response: action.payload,
       };
     case DATA_FAILURE:
@@ -38,7 +39,13 @@ function sampleReducer(state = {}, action) {
         isFetching: false,
         isError: true,
       };
-
+    case 'SET_MODAL_CLOSE':
+      return {
+        ...state,
+        isFetching: false,
+        isError: false,
+        isSuccess: false,
+      };
     default:
       return state;
   }

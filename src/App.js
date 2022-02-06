@@ -29,6 +29,7 @@ import {
   requestMultiple,
   openSettings,
 } from 'react-native-permissions';
+import TabRoutes from './Components/TabRoutes';
 const App = () => {
   useEffect(() => {
     console.log('hudai xa');
@@ -68,6 +69,7 @@ const App = () => {
               <Stack.Screen name="ADD USER" component={Register} />
               <Stack.Screen name="Forgot" component={ForgotPassword} />
               <Stack.Screen name="Otp" component={OTP} />
+              <Stack.Screen name="tabRoute" component={TabRoutes} />
             </Stack.Navigator>
           </NavigationContainer>
         </PersistGate>

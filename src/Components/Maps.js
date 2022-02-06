@@ -1,7 +1,7 @@
 import MapView, {Geojson, Marker, PROVIDER_GOOGLE} from 'react-native-maps'; // remove PROVIDER_GOOGLE import if not using Google Maps
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import location from '../images/location.png';
-import React, {useEffect} from 'react';
+import React, {useEffect, useRef} from 'react';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -9,6 +9,7 @@ import {
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import {useState} from 'react';
 import Geolocation from '@react-native-community/geolocation';
+import MapViewDirections from 'react-native-maps-directions';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -39,6 +40,8 @@ const styles = StyleSheet.create({
   },
 });
 export default Maps = () => {
+  const GOOGLE_MAPS_APIKEY = 'AIzaSyAKLUx_rnltQ2u9Xr39DcpX3UdRr293gCU';
+  const mapRef = useRef();
   const [initialState, setInitialState] = useState({
     lat: '',
     long: '',
@@ -47,16 +50,16 @@ export default Maps = () => {
   const [region, setRegion] = useState({
     lat: '',
     long: '',
+    description: '',
   });
   console.log(initialState, 'mathi');
   const geoLocation = () => {
-    Geolocation.getCurrentPosition(info =>
+    Geolocation.getCurrentPosition(info => {
       setInitialState({
-        ...initialState,
         lat: info.coords.latitude,
         long: info.coords.longitude,
-      }),
-    );
+      });
+    });
   };
   useEffect(() => {
     geoLocation();
@@ -91,6 +94,7 @@ export default Maps = () => {
             width: '100%',
             zIndex: 1,
             top: 0,
+            alignItems: 'center',
           },
           listView: {
             backgroundColor: '#fff',
@@ -110,7 +114,7 @@ export default Maps = () => {
             borderColor: '#000',
             borderRadius: 10,
             fontSize: 20,
-            flex: 1,
+            flex: 0.9,
             zIndex: 1,
           },
 
@@ -130,6 +134,7 @@ export default Maps = () => {
           radius: 30000,
           location: `${region.lat},${region.long}`,
         }}
+        minLength={2}
         currentLocation={true}
         listViewDisplayed="auto"
         fetchDetails={true}
@@ -153,16 +158,16 @@ export default Maps = () => {
           latitudeDelta: 0.015,
           longitudeDelta: 0.0121,
         }}
-        onRegionChange={regions => console.log(regions, 'region')}>
+        ref={mapRef}>
         <Marker
           coordinate={{
             latitude: initialState.lat,
             longitude: initialState.long,
           }}
           size={10}
-          title="marker"
-          resizeMode="contain"
+          title="Current Location"
           description={initialState.description}
+          resizeMode="contain"
           resizeMode="contain"
           width={30}
           height={30}
@@ -175,8 +180,32 @@ export default Maps = () => {
             })
           }
         />
+        <MapViewDirections
+          origin={{latitude: initialState.lat, longitude: initialState.long}}
+          destination={{latitude: region.lat, longitude: region.long}}
+          apikey={GOOGLE_MAPS_APIKEY}
+          strokeWidth={5}
+          strokeColor="green"
+          optimizeWaypoints={true}
+          onReady={result => {
+            console.log(result.distance, ' km', 'and', result.duration, ' min');
+            setInitialState({
+              ...initialState,
+              description: `${result.distance} km, ${result.duration} min`,
+            });
+            mapRef.current.fitToCoordinates(result.coordinates, {
+              right: 20,
+              bottom: 300,
+              left: 30,
+              top: 100,
+            });
+          }}
+        />
         {region.lat !== '' && (
-          <Marker coordinate={{latitude: region.lat, longitude: region.long}} />
+          <Marker
+            coordinate={{latitude: region.lat, longitude: region.long}}
+            title={region.description}
+          />
         )}
       </MapView>
     </View>

@@ -36,6 +36,7 @@ import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete'
 import AuthenticationPage from './AuthenticationPage';
 import Practice from '../Practice';
 import Geolocation from '@react-native-community/geolocation';
+import {useSelector} from 'react-redux';
 import {SignIn} from '../apiSerivice';
 GoogleSignin.configure({
   webClientId:
@@ -51,6 +52,7 @@ export default function Login({navigation}) {
   });
 
   const [user, setUser] = useState();
+  const [bool, setBool] = useState(false);
   const [userInfo, setUserInfo] = useState();
   const [initializing, setInitializing] = useState(true);
 
@@ -83,210 +85,211 @@ export default function Login({navigation}) {
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
     return subscriber; // unsubscribe on unmount
   }, []);
+  useEffect(() => {
+    if (user) {
+      console.log(user, 'user');
+      navigation.navigate('Practice');
+    }
+  }, [user]);
 
   if (initializing) return null;
 
   const signInHandle = () => {
+    console.log(loginData.email);
     SignIn(loginData.email, loginData.password);
   };
+
   return (
     <View style={styles.container}>
-      {user ? (
-        <Practice />
-      ) : (
-        <>
-          <View style={{alignItems: 'center'}}>
-            <View
-              style={{
-                alignItems: 'center',
-                paddingVertical: 20,
-                backgroundColor: '#fff',
-                width: '80%',
-                borderWidth: 1,
-                borderColor: 'black',
-                marginVertical: 10,
-                borderRadius: 10,
-              }}>
-              <View style={{marginBottom: 30}}>
-                <Text style={{color: 'black', fontSize: 50}}>Login</Text>
-              </View>
-              <View style={styles.userType}>
-                <Image source={userImage} style={{width: 20, height: 20}} />
-                <Menu style={{flexDirection: 'row'}}>
-                  <MenuTrigger
-                    style={{
-                      paddingHorizontal: 5,
-                      fontWeight: 'bold',
-                    }}>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-
-                        width: wp(40),
-                      }}>
-                      <View>
-                        <Text>
-                          {loginData.userType
-                            ? loginData.userType
-                            : 'Choose who you are ?'}
-                        </Text>
-                      </View>
-                      <Image
-                        style={{height: 20, width: 15}}
-                        source={downArrow}
-                      />
-                    </View>
-                  </MenuTrigger>
-                  <MenuOptions>
-                    <MenuOption
-                      text="Teacher"
-                      onSelect={() =>
-                        setLoginData({...loginData, userType: 'Teacher'})
-                      }
-                    />
-                    <MenuOption
-                      text="Student"
-                      onSelect={() =>
-                        setLoginData({
-                          ...loginData,
-                          userType: 'Student',
-                        })
-                      }
-                    />
-                  </MenuOptions>
-                </Menu>
-              </View>
-              <View style={styles.textBox}>
-                <Image
-                  source={userImg}
-                  style={{width: 20, height: 20, marginHorizontal: 5}}
-                />
-                <TextInput
-                  placeholder="User ID"
-                  style={{flex: 1}}
-                  onChangeText={text =>
-                    setLoginData({
-                      ...loginData,
-                      userId: text,
-                    })
-                  }
-                />
-              </View>
-              <View style={styles.textBox}>
-                <Image
-                  source={email}
-                  style={{width: 20, height: 20, marginHorizontal: 5}}
-                />
-                <TextInput
-                  placeholder="Email"
-                  style={{flex: 1}}
-                  onChangeText={text =>
-                    setLoginData({
-                      ...loginData,
-                      email: text,
-                    })
-                  }
-                  keyboardType="email-address"
-                />
-              </View>
-              <View style={styles.textBox}>
-                <Image
-                  source={lock}
-                  style={{width: 20, height: 20, marginHorizontal: 5}}
-                />
-                <TextInput
-                  style={{flex: 1}}
-                  placeholder="Password"
-                  secureTextEntry={true}
-                  onChangeText={text =>
-                    setLoginData({
-                      ...loginData,
-                      password: text,
-                    })
-                  }
-                />
-              </View>
-
-              <TouchableOpacity
-                onPress={signInHandle}
-                style={{
-                  marginVertical: 20,
-                  backgroundColor: 'black',
-                  borderRadius: 5,
-                }}
-                disabled={
-                  loginData.email === '' && loginData.password === ''
-                    ? true
-                    : false
-                }>
-                <Text
+      <>
+        <View style={{alignItems: 'center'}}>
+          <View
+            style={{
+              alignItems: 'center',
+              paddingVertical: 20,
+              backgroundColor: '#fff',
+              width: '80%',
+              borderWidth: 1,
+              borderColor: 'black',
+              marginVertical: 10,
+              borderRadius: 10,
+            }}>
+            <View style={{marginBottom: 30}}>
+              <Text style={{color: 'black', fontSize: 50}}>Login</Text>
+            </View>
+            <View style={styles.userType}>
+              <Image source={userImage} style={{width: 20, height: 20}} />
+              <Menu style={{flexDirection: 'row'}}>
+                <MenuTrigger
                   style={{
-                    color: '#fff',
-                    paddingVertical: 10,
-                    paddingHorizontal: 20,
-                    fontSize: 20,
+                    paddingHorizontal: 5,
+                    fontWeight: 'bold',
                   }}>
-                  Login
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+
+                      width: wp(40),
+                    }}>
+                    <View>
+                      <Text>
+                        {loginData.userType
+                          ? loginData.userType
+                          : 'Choose who you are ?'}
+                      </Text>
+                    </View>
+                    <Image style={{height: 20, width: 15}} source={downArrow} />
+                  </View>
+                </MenuTrigger>
+                <MenuOptions>
+                  <MenuOption
+                    text="Teacher"
+                    onSelect={() =>
+                      setLoginData({...loginData, userType: 'Teacher'})
+                    }
+                  />
+                  <MenuOption
+                    text="Student"
+                    onSelect={() =>
+                      setLoginData({
+                        ...loginData,
+                        userType: 'Student',
+                      })
+                    }
+                  />
+                </MenuOptions>
+              </Menu>
+            </View>
+            <View style={styles.textBox}>
+              <Image
+                source={userImg}
+                style={{width: 20, height: 20, marginHorizontal: 5}}
+              />
+              <TextInput
+                placeholder="User ID"
+                style={{flex: 1}}
+                onChangeText={text =>
+                  setLoginData({
+                    ...loginData,
+                    userId: text,
+                  })
+                }
+              />
+            </View>
+            <View style={styles.textBox}>
+              <Image
+                source={email}
+                style={{width: 20, height: 20, marginHorizontal: 5}}
+              />
+              <TextInput
+                placeholder="Email"
+                style={{flex: 1}}
+                onChangeText={text =>
+                  setLoginData({
+                    ...loginData,
+                    email: text,
+                  })
+                }
+                keyboardType="email-address"
+              />
+            </View>
+            <View style={styles.textBox}>
+              <Image
+                source={lock}
+                style={{width: 20, height: 20, marginHorizontal: 5}}
+              />
+              <TextInput
+                style={{flex: 1}}
+                placeholder="Password"
+                secureTextEntry={true}
+                onChangeText={text =>
+                  setLoginData({
+                    ...loginData,
+                    password: text,
+                  })
+                }
+              />
+            </View>
+
+            <TouchableOpacity
+              onPress={signInHandle}
+              style={{
+                marginVertical: 20,
+                backgroundColor: 'black',
+                borderRadius: 5,
+              }}
+              disabled={
+                loginData.email === '' && loginData.password === ''
+                  ? true
+                  : false
+              }>
+              <Text
+                style={{
+                  color: '#fff',
+                  paddingVertical: 10,
+                  paddingHorizontal: 20,
+                  fontSize: 20,
+                }}>
+                Login
+              </Text>
+            </TouchableOpacity>
+
+            <View style={{flexDirection: 'row'}}>
+              <Text>Already Have an Account ?</Text>
+              <TouchableOpacity onPress={() => navigation.navigate('ADD USER')}>
+                <Text style={{color: '#4542f5', paddingHorizontal: 10}}>
+                  Click Here !
                 </Text>
               </TouchableOpacity>
-
-              <View style={{flexDirection: 'row'}}>
-                <Text>Already Have an Account ?</Text>
-                <TouchableOpacity
-                  onPress={() => navigation.navigate('ADD USER')}>
-                  <Text style={{color: '#4542f5', paddingHorizontal: 10}}>
-                    Click Here !
-                  </Text>
-                </TouchableOpacity>
-              </View>
-              <View style={{flexDirection: 'row', paddingTop: 15}}>
-                <Text>Do you Forget your Password ?</Text>
-                <TouchableOpacity onPress={() => navigation.navigate('Forgot')}>
-                  <Text style={{color: '#4542f5', paddingHorizontal: 10}}>
-                    Click Here !
-                  </Text>
-                </TouchableOpacity>
-              </View>
-              <TouchableOpacity
-                style={{
-                  flexDirection: 'row',
-                  borderColor: '#000',
-                  borderWidth: 0.5,
-                  padding: 5,
-                  marginVertical: 15,
-                }}
-                onPress={googleSignIn}>
-                <Image
-                  source={google}
-                  style={{
-                    height: hp(3),
-                    width: wp(6),
-                    resizeMode: 'cover',
-                  }}
-                />
-                <Text style={{paddingLeft: 5}}>Signin with Google</Text>
+            </View>
+            <View style={{flexDirection: 'row', paddingTop: 15}}>
+              <Text>Do you Forget your Password ?</Text>
+              <TouchableOpacity onPress={() => navigation.navigate('Forgot')}>
+                <Text style={{color: '#4542f5', paddingHorizontal: 10}}>
+                  Click Here !
+                </Text>
               </TouchableOpacity>
             </View>
-          </View>
-          <View style={{alignItems: 'center'}}>
             <TouchableOpacity
-              onPress={() => navigation.navigate('Map')}
               style={{
+                flexDirection: 'row',
                 borderColor: '#000',
-                borderWidth: 1,
-                height: hp(5),
-                width: wp(20),
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: '#fff',
-                borderRadius: 5,
-              }}>
-              <Text color="#000"> Show Map</Text>
+                borderWidth: 0.5,
+                padding: 5,
+                marginVertical: 15,
+              }}
+              onPress={googleSignIn}>
+              <Image
+                source={google}
+                style={{
+                  height: hp(3),
+                  width: wp(6),
+                  resizeMode: 'cover',
+                }}
+              />
+              <Text style={{paddingLeft: 5}}>Signin with Google</Text>
             </TouchableOpacity>
           </View>
+        </View>
+        <View style={{alignItems: 'center'}}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Map')}
+            style={{
+              borderColor: '#000',
+              borderWidth: 1,
+              height: hp(5),
+              width: wp(20),
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: '#fff',
+              borderRadius: 5,
+            }}>
+            <Text color="#000"> Show Map</Text>
+          </TouchableOpacity>
+        </View>
 
-          {/*  {bool && (
+        {/*  {bool && (
         <MapView
           provider={PROVIDER_GOOGLE} // remove if not using Google Maps
           style={styles.map}
@@ -297,8 +300,7 @@ export default function Login({navigation}) {
             longitudeDelta: 0.0121,
           }}></MapView>
       )} */}
-        </>
-      )}
+      </>
     </View>
   );
 }

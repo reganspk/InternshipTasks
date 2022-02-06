@@ -41,9 +41,9 @@ export const epicSample = action =>
     switchMap(action =>
       from(myApi.getData()).pipe(
         mergeMap(response => {
-          /* RootNavigation.navigate('ADD USER', {header: 'header'}); */
-
-          console.log('response', response);
+          RootNavigation.navigate('tabRoute', {header: 'header'});
+          console.log(action.payload, 'payload');
+          action.payload.myUIChange();
           return of({
             type: DATA_SUCCESS,
             payload: response,
